@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# Redirect www to non-www and https
+RewriteCond %{HTTP_HOST} ^www\.fobes\.in [NC,OR]
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://fobes.in/$1 [L,R=301]
+
+# Rewrite other URLs to include the 'public' directory
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ /public/$1 [L]
+

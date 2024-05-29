@@ -1,0 +1,81 @@
+<?php
+
+namespace App\Services\Website\Candidate;
+
+use App\Models\User;
+use Carbon\Carbon;
+
+// added
+use App\Models\CandidateResume;
+
+class CandidateProfileDetailsServiceResdex
+{
+    /**
+     * Get candidate profile details
+     */
+    public function execute($request): array
+    {
+        $user = authUser();
+        $user_plan = $user->company->userPlanResdex;
+        // return $user_plan;
+        $candidate = User::where('username', $request->username)
+            ->with(['contactInfo', 'socialInfo', 'candidate' => function ($query) {
+                $query->with('experience', 'education', 'experiences', 'educations', 'profession', 'languages:id,name', 'skills', 'socialInfo')
+                    ->withCount(['bookmarkCandidatesResdex as bookmarked' => function ($q) {
+                        $q->where('company_id', currentCompany()->id);
+                    }])
+                    ->withCount(['already_views as already_view' => function ($q) {
+                        $q->where('company_id', currentCompany()->id);
+                    }]);
+            }])->firstOrFail();
+
+        $candidate->candidate->birth_date = Carbon::parse($candidate->candidate->birth_date)->format('d F, Y');
+
+        if ( $request->count_view) {
+            $company = auth()->user()->company;
+            $cv_views = $company->cv_views; // get auth company all cv views
+            $cv_view_exist = $cv_views->where('candidate_id', $candidate->candidate->id)->first(); // get specific view
+
+            if (! $cv_view_exist) {
+                // check view isn't exist
+                isset($user_plan) ? $user_plan->decrement('credit_limit') : ''; // point reduce
+                // and create view count item
+                $company->cv_views()->create([
+                    'candidate_id' => $candidate->candidate->id,
+                    'view_date' => Carbon::parse(Carbon::now()),
+                ]);
+            }
+        }
+
+        $cv_limit_message = $user_plan->credit_limit == 'limited' ? 'You have '.$user_plan->credit_limit.' credits remaining.' : null;
+
+        $languages = $candidate->candidate
+            ->languages()
+            ->pluck('name')
+            ->toArray();
+        $candidate_languages = $languages ? implode(', ', $languages) : '';
+
+        $skills = $candidate->candidate->skills->pluck('name');
+        $candidate_skills = $skills ? implode(', ', json_decode(json_encode($skills), true)) : '';
+
+// added
+        // echo $candidate->candidate->id;exit();
+        $get_candidate_resumes_id = CandidateResume::where('candidate_id',$candidate->candidate->id)->orderBy('id', 'desc')->first();
+        if($get_candidate_resumes_id){
+          $get_candidate_resumes_id = $get_candidate_resumes_id->id;
+        }else{
+          $get_candidate_resumes_id = 0;
+        }
+        // echo $get_candidate_resumes_id->id;exit();
+        
+        
+        return [
+            'success' => true,
+            'data' => $candidate,
+            'skills' => $candidate_skills ?? '',
+            'languages' => $candidate_languages ?? '',
+            'profile_view_limit' => $cv_limit_message,
+            'resume_id' => $get_candidate_resumes_id,
+        ];
+    }
+}

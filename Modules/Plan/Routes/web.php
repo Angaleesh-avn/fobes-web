@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use Modules\Plan\Http\Controllers\PlanController;
+
+use Modules\Plan\Http\Controllers\PlanResdexController;
+
+Route::middleware(['auth:admin', 'set_lang'])->group(function () {
+    Route::prefix('admin/plan')->name('module.plan.')->group(function () {
+        Route::get('/', [PlanController::class, 'index'])->name('index');
+        Route::get('/create', [PlanController::class, 'create'])->name('create');
+        Route::post('/store', [PlanController::class, 'store'])->name('store');
+        Route::get('/edit/{plan}', [PlanController::class, 'edit'])->name('edit');
+        Route::put('/update/{plan}', [PlanController::class, 'update'])->name('update');
+        Route::delete('delete/{plan}', [PlanController::class, 'destroy'])->name('delete');
+        Route::post('recommended', [PlanController::class, 'markRecommended'])->name('recommended');
+        Route::post('default', [PlanController::class, 'markDefault'])->name('default');
+
+        Route::post('/translate/plan/description', [PlanController::class, 'translateDescription'])->name('description.translate');
+    });
+    
+    // added
+    Route::prefix('admin/plan_resdex')->name('module.plan_resdex.')->group(function () {
+        Route::get('/', [PlanResdexController::class, 'index'])->name('index');
+        Route::get('/create', [PlanResdexController::class, 'create'])->name('create');
+        Route::post('/store', [PlanResdexController::class, 'store'])->name('store');
+        Route::get('/edit/{plan_resdex}', [PlanResdexController::class, 'edit'])->name('edit');
+        Route::put('/update/{plan_resdex}', [PlanResdexController::class, 'update'])->name('update');
+        Route::delete('delete/{plan_resdex}', [PlanResdexController::class, 'destroy'])->name('delete');
+    });
+});
