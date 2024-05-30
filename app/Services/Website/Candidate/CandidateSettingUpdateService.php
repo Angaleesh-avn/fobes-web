@@ -230,6 +230,9 @@ class CandidateSettingUpdateService
             'profession_id' => $profession_id,
             'status' => $request->status,
             'available_in' => $request->available_in ? Carbon::parse($request->available_in)->format('Y-m-d') : null,
+            'notice_period' => $request->notice_period,
+            'current_ctc' => $request->current_ctc,
+            'expected_ctc' => $request->expected_ctc,
         ]);
 
         // skill & language

@@ -90,7 +90,7 @@ return [
             'port' => env('DB_PORT', '1433'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'password' => env('DB_PASSWORD', 'forge'),
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,

@@ -337,6 +337,18 @@
                                                             role="alert">{{ __($message) }}</span>
                                                     @enderror
                                                 </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <h4 class="f-size-14 ft-wt-5 rt-mb-20 lh-1">Your Current CTC</h4>
+                                                    <input type="text" name="current_ctc"
+                                                    value="{{ old('current_ctc', $candidate->current_ctc) }}"
+                                                    class="form-control">
+                                                </div>
+                                                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                                                    <h4 class="f-size-14 ft-wt-5 rt-mb-20 lh-1">Your Expected CTC</h4>
+                                                    <input type="text" name="expected_ctc"
+                                                    value="{{ old('expected_ctc', $candidate->expected_ctc) }}"
+                                                    class="form-control">
+                                                </div>
                                                 <div class="col-lg-6 mb-3">
                                                     <x-forms.label :required="true" name="your_availability"
                                                         class="body-font-4 d-block text-gray-900 rt-mb-8" />
@@ -358,26 +370,43 @@
                                                             class="error invalid-feedback d-block">{{ $message }}</span>
                                                     @enderror
                                                 </div>
-                                                <div class="col-lg-6 d-none" id="available_in_status">
-                                                    <div>
-                                                        <h4 class="f-size-14 ft-wt-5 rt-mb-20 lh-1">
-                                                            {{ __('available_in') }}</h4>
-                                                        <div
-                                                            class="d-flex align-items-center form-control-icon date datepicker">
-                                                            <input type="text" id="available_id_date"
-                                                                name="available_in"
-                                                                value="{{ old('available_in', date('d-m-Y', strtotime($candidate->available_in))) }}"
-                                                                placeholder="dd/mm/yyyy"
-                                                                class="form-control border-cutom @error('available_in') is-invalid @enderror">
-                                                            <span class="input-group-addon input-group-text-custom">
-                                                                <x-svg.calendar-icon />
-                                                            </span>
+                                                <div class="col-lg-12 d-none" id="available_in_status">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <!-- <h4 class="f-size-14 ft-wt-5 rt-mb-20 lh-1">
+                                                                {{ __('available_in') }}</h4> -->
+                                                            <div
+                                                                class="d-flex align-items-center form-control-icon date datepicker">
+                                                                <input type="text" id="available_id_date"
+                                                                    name="available_in"
+                                                                    value="{{ old('available_in', date('d-m-Y', strtotime($candidate->available_in))) }}"
+                                                                    placeholder="dd/mm/yyyy"
+                                                                    class="form-control border-cutom @error('available_in') is-invalid @enderror">
+                                                                <span class="input-group-addon input-group-text-custom">
+                                                                    <x-svg.calendar-icon />
+                                                                </span>
+                                                            </div>
                                                         </div>
-                                                        @error('available_in')
-                                                            <span
-                                                                class="error invalid-feedback d-block">{{ $message }}</span>
-                                                        @enderror
+                                                        <div class="col-lg-6">
+                                                            <div
+                                                                class="d-flex align-items-center form-control-icon ">
+                                                                <select name="notice_period" class="rt-selectactive w-100-p">
+                                                                    <option @if ($candidate->notice_period == 'Notice Period ') selected @endif
+                                                                        value="Notice Period ">{{ __('Notice Period ') }}</option>
+                                                                    <option @if ($candidate->notice_period == 'immediate') selected @endif
+                                                                        value="immediate">{{ __('Immediate') }}</option>
+                                                                    <option @if ($candidate->notice_period == '30-days') selected @endif
+                                                                        value="30-days">{{ __('30 Days') }}</option>
+                                                                    <option @if ($candidate->notice_period == '90-days') selected @endif
+                                                                        value="90-days">{{ __('90 Days') }}</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
                                                     </div>
+                                                    @error('available_in')
+                                                        <span
+                                                            class="error invalid-feedback d-block">{{ $message }}</span>
+                                                    @enderror                                                    
                                                 </div>
                                                 <div class="col-lg-12 mb-3">
                                                     <x-forms.label :required="true" name="skills_you_have"
